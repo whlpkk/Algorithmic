@@ -22,7 +22,7 @@ print(minHeap.HeapSort())
 print("归并排序")
 //归并排序
 let a = [4,2,6,1,3,8,4,9]
-let a1 = mergeSort(a)
+let a1 = MergeSort.mergeSorted(a)
 print(a1)
 
 

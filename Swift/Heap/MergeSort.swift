@@ -10,44 +10,68 @@ import Foundation
 
 //2路归并
 
-func mergeSort(_ array: [Int]) -> [Int] {
-    var helper = Array(repeating: 0, count: array.count)
-    var array = array
-    mergeSort(&array, helper: &helper, low: 0, high: array.count - 1)
-    return array
-}
-
-func mergeSort(_ array: inout [Int], helper: inout [Int], low: Int, high: Int) {
-    guard low < high else {
-        return
+class MergeSort<Element: Comparable> {
+    public static func mergeSorted(_ array: [Element]) -> [Element] {
+        var tmp :[Element?] = Array(repeating: nil, count: array.count)
+        var array = array
+        mergeSortAction2(&array, tmp: &tmp, low: 0, high: array.count - 1)
+        return array
     }
-    let middle = (high - low) / 2 + low
-    mergeSort(&array, helper: &helper, low: low, high: middle)
-    mergeSort(&array, helper: &helper, low: middle + 1, high: high)
-    merge(&array, helper: &helper, low: low, middle: middle, high: high)
-}
-
-func merge(_ array: inout [Int], helper: inout [Int], low: Int, middle: Int, high: Int) {
-    for i in low...high {
-        helper[i] = array[i]
+    
+    public static func mergeSort(_ array: inout [Element]) -> Void {
+        var tmp :[Element?] = Array(repeating: nil, count: array.count)
+        mergeSortAction2(&array, tmp: &tmp, low: 0, high: array.count - 1)
     }
-    var helperLeft = low
-    var helperRight = middle + 1
-    var current = low
-    while helperLeft <= middle && helperRight <= high {
-        if helper[helperLeft] <= helper[helperRight] {
-            array[current] = helper[helperLeft]
-            helperLeft += 1
-        } else {
-            array[current] = helper[helperRight]
-            helperRight += 1
+
+    // 递归版
+    static func mergeSortAction(_ array: inout [Element], tmp: inout [Element?], low: Int, high: Int) {
+        guard low < high else {
+            return
         }
-        current += 1
+        let middle = (high - low) / 2 + low
+        mergeSortAction(&array, tmp: &tmp, low: low, high: middle)
+        mergeSortAction(&array, tmp: &tmp, low: middle + 1, high: high)
+        merge(&array, tmp: &tmp, low: low, middle: middle, high: high)
     }
-    guard middle - helperLeft >= 0 else {
-        return
+    
+    // 循环版
+    static func mergeSortAction2(_ array: inout [Element], tmp: inout [Element?], low: Int, high: Int) {
+        var size = 1
+        var l=0, mid=0, r=0
+        while size <= high {
+            l = 0
+            while l+size <= high {
+                mid = l+size-1
+                r = mid + size
+                if r > high {
+                    r = high
+                }
+                merge(&array, tmp: &tmp, low: l, middle: mid, high: r)
+                l = r + 1
+            }
+            size *= 2
+        }
     }
-    for i in 0...middle - helperLeft {
-        array[current + i] = helper[helperLeft + i]
+    
+    static func merge(_ array: inout [Element], tmp: inout [Element?], low: Int, middle: Int, high: Int) {
+        for i in low...high {
+            tmp[i] = array[i]
+        }
+        var l = low
+        var r = middle + 1
+        var i = low
+        while l <= middle || r <= high {
+            if r > high || (l<=middle && array[l] <= array[r]) {
+                tmp[i] = array[l]
+                l += 1
+            } else {
+                tmp[i] = array[r]
+                r += 1
+            }
+            i += 1
+        }
+        for i in low...high {
+            array[i] = tmp[i]!
+        }
     }
 }

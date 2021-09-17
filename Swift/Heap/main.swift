@@ -47,5 +47,3 @@ print("\n")
 
 print("123排序")
 let absss = [3,2,1,1,2,3,1,2]
-sort123(absss)
-

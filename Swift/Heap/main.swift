@@ -10,23 +10,31 @@ import Foundation
 
 print("堆排序")
 //堆，堆排序
-let mHeap:MaxHeap<Int> = MaxHeap.init(array: [1, 32, 42, 3, 12, 23, 56, 89, 24, 44])
-print(mHeap.HeapSort())
+let mHeap:Heap<Int> = Heap.init(array: [1, 32, 42, 3, 12, 23, 56, 89, 24, 44], compareOrderBy: >)
+print(mHeap.sort())
 
-let minHeap:MinHeap<Int> = MinHeap.init(array: [1, 32, 42, 3, 12, 23, 56, 89, 24, 44])
-print(minHeap.HeapSort())
+let minHeap:Heap<Int> = Heap.init(array: [1, 32, 42, 3, 12, 23, 56, 89, 24, 44], compareOrderBy: <)
+print(minHeap.sort())
 minHeap.push(41)
-print(minHeap.HeapSort())
+print(minHeap.sort())
 
 
-print("归并排序")
+print("\n归并排序")
 //归并排序
-let a = [4,2,6,1,3,8,4,9]
-let a1 = MergeSort.mergeSorted(a)
+var a1 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
+print( MergeSort.sorted(a1) )
+MergeSort.sort(&a1, by: >)
 print(a1)
 
+print("\n插入排序")
+print( InsertSort.sorted([1, 32, 42, 3, 12, 23, 56, 89, 24, 44], by: >) )
+var a2 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
+InsertSort.sort(&a2)
+print(a2)
 
-print("根据前序遍历和中序遍历构建二叉树")
+
+
+print("\n根据前序遍历和中序遍历构建二叉树")
 //根据前序遍历和中序遍历构建二叉树
 let pre = [1,2,4,7,3,5,6,8]
 let mid = [4,7,2,1,5,3,8,6]
@@ -37,7 +45,7 @@ tree?.midOrder()
 tree?.lasOrder()
 
 
-print("斐波那契数列")
+print("\n斐波那契数列")
 //斐波那契数列
 for i in 0...10 {
     print(FibonacciSequence(i), terminator:" ")

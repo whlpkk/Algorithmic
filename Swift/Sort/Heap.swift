@@ -14,35 +14,21 @@ import Foundation
  当需要pop时，交互根节点和最后一个叶子节点，推出根节点，将根部的叶子节点  下沉
  */
 
-
 public protocol Copyable {
     func copy() -> Copyable
 }
 
-extension HeapClass :Copyable {
+extension Heap :Copyable {
     public func copy() -> Copyable {
         let clas = type(of: self)
-        let heap = clas.init(array: self.array)
+        let heap = clas.init(array: self.array, compareOrderBy: self.compareOrderFunc)
         return heap
     }
 }
 
-public protocol HeapComparable {
-    func compareElement(parentIndex:Int, leftIndex:Int, rightIndex:Int?) -> Int
-    func isNeedChange(_ index: Int, _ parent: Int) -> Bool
-}
-
-extension HeapComparable {
-    func isNeedChange(_ index: Int, _ parent: Int) -> Bool {
-        let i = compareElement(parentIndex: parent, leftIndex: index, rightIndex: nil)
-        return !(i == parent)
-    }
-}
-
-typealias Heap<Element: Comparable> = HeapClass<Element> & HeapComparable
-
-class HeapClass <Element: Comparable> {
+class Heap <Element: Comparable> {
     public var array:Array<Element> = []
+    let compareOrderFunc : ((Element, Element) -> Bool)
     
     //如果没有左节点，返回-1
     public func left(_ index:Int) -> Int {
@@ -122,6 +108,25 @@ class HeapClass <Element: Comparable> {
         }
         (self.array[indexA], self.array[indexB]) = (self.array[indexB], self.array[indexA])
     }
+    
+    func isNeedChange(_ index: Int, _ parent: Int) -> Bool {
+        let i = compareElement(parentIndex: parent, leftIndex: index, rightIndex: nil)
+        return !(i == parent)
+    }
+    func compareElement(parentIndex:Int, leftIndex:Int, rightIndex:Int?) -> Int {
+        var targetIndex = parentIndex
+        
+        if leftIndex != -1 &&  self.compareOrderFunc(self.array[leftIndex], self.array[targetIndex]) {
+            targetIndex = leftIndex
+        }
+        guard let rightIndex = rightIndex else {
+            return targetIndex
+        }
+        if rightIndex != -1 && self.compareOrderFunc(self.array[rightIndex], self.array[targetIndex]) {
+            targetIndex = rightIndex
+        }
+        return targetIndex
+    }
 
     //使index节点上浮
     func shiftUp(_ index:Int) {
@@ -129,16 +134,14 @@ class HeapClass <Element: Comparable> {
             return
         }
         
-        var parent = self.parent(index)
+        var child = index
+        var parent = self.parent(child)
         while parent != -1 {
-            guard let heap = self as? Heap<Element> else {
-                return
-            }
-
-            guard heap.isNeedChange(index, parent) else {
+            guard self.isNeedChange(child, parent) else {
                 break
             }
-            self.swap(index, parent)
+            self.swap(child, parent)
+            child = parent
             parent = self.parent(parent)
         }
     }
@@ -148,29 +151,21 @@ class HeapClass <Element: Comparable> {
         self.shiftDownRecursive(index)
         //self.shiftDownCycle(index)
     }
+    
     //节点下沉递归版
     func shiftDownRecursive(_ index:Int) {
-        guard index>=0 && index<self.array.count else {
-            return
-        }
-        guard let heap = self as? Heap<Element> else {
-            return
-        }
-
         let l = self.left(index)
         let r = self.right(index)
-        let largest = heap.compareElement(parentIndex: index, leftIndex: l, rightIndex: r)
+        let largest = self.compareElement(parentIndex: index, leftIndex: l, rightIndex: r)
         if index != largest {
             self.swap(index, largest)
             self.shiftDownRecursive(largest)
         }
     }
+    
     //节点下沉循环版
-    public func shiftDownCycle(_ index:Int) {
+    func shiftDownCycle(_ index:Int) {
         guard index>=0 && index<self.array.count else {
-            return
-        }
-        guard let heap = self as? Heap<Element> else {
             return
         }
 
@@ -179,7 +174,7 @@ class HeapClass <Element: Comparable> {
         var r = self.right(index)
         
         while true {
-            let largest = heap.compareElement(parentIndex: index, leftIndex: l, rightIndex: r)
+            let largest = self.compareElement(parentIndex: index, leftIndex: l, rightIndex: r)
             if index != largest {
                 self.swap(index, largest)
             }else {
@@ -190,12 +185,13 @@ class HeapClass <Element: Comparable> {
             index = largest
         }
     }
-    
-    required init(array:Array<Element>?) {
+        
+    required init(array:Array<Element>?, compareOrderBy: @escaping (Element, Element) -> Bool) {
+        self.compareOrderFunc = compareOrderBy
         //两种建堆方法，第一种是全部放入，然后不断调整
-        self.buildHeap(array: array != nil ? array! : [])
+        //self.buildHeap(array: array ?? [])
         //第二种是一个个插入堆中
-        //self.buildHeap2(array: array)
+        self.buildHeap2(array: array ?? [])
     }
     
     //建堆，从最后一个非叶子节点开始，依次向前下沉节点,从后向前建堆。
@@ -225,51 +221,14 @@ class HeapClass <Element: Comparable> {
         }
     }
     
-    
-    public func HeapSort() -> Array<Element> {
+    public func sort() -> Array<Element> {
         var resArray: Array<Element> = [];
         
-        let temHeap = self.copy() as! HeapClass
+        let temHeap = self.copy() as! Heap
         while !temHeap.isEmpty() {
             let e = temHeap.pop()
             resArray.append(e!)
         }
         return resArray
-    }
-    
-}
-
-class MaxHeap<Element: Comparable>: Heap<Element> {
-    //小顶堆同理self.array[l] > self.array[largest]，把'>'替换成'<'即可
-    public func compareElement(parentIndex:Int, leftIndex:Int, rightIndex:Int?) -> Int {
-        var largest = parentIndex
-        
-        if leftIndex != -1 && self.array[leftIndex] > self.array[largest] {
-            largest = leftIndex
-        }
-        guard let rightIndex = rightIndex else {
-            return largest
-        }
-        if rightIndex != -1 && self.array[rightIndex] > self.array[largest] {
-            largest = rightIndex
-        }
-        return largest
-    }
-}
-
-class MinHeap<Element: Comparable>: Heap<Element> {
-    public func compareElement(parentIndex:Int, leftIndex:Int, rightIndex:Int?) -> Int {
-        var min = parentIndex
-        
-        if leftIndex != -1 && self.array[leftIndex] < self.array[min] {
-            min = leftIndex
-        }
-        guard let rightIndex = rightIndex else {
-            return min
-        }
-        if rightIndex != -1 && self.array[rightIndex] < self.array[min] {
-            min = rightIndex
-        }
-        return min
     }
 }

@@ -12,6 +12,8 @@ import Foundation
  大顶堆小顶堆，push或pop的重要操作，即 上浮 和 下沉
  当需要push时， 先append到最后，然后执行  上浮
  当需要pop时，交互根节点和最后一个叶子节点，推出根节点，将根部的叶子节点  下沉
+ 
+ 不稳定的排序算法。
  */
 
 public protocol Copyable {

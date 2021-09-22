@@ -8,8 +8,15 @@
 
 import Foundation
 
-//2路归并
+/*
+ 归并排序
 
+ 1、把序列递归地分成短序列，递归出口是短序列只有1个元素(认为直接有序),然后把各个有序的短序列合并成一个有序的长序列，不断合并直到原序列全部排好序；
+ 2、合并过程中我们可以保证如果两个当前元素相等时，我们把处在前面的序列的元素保存在结 果序列的前面，这样就保证了稳定性；
+ 3、稳定排序算法。
+ */
+
+//2路归并
 class MergeSort<Element: Comparable> {
     public static func sorted(_ array: [Element]) -> [Element] {
         return sorted(array, by: <)

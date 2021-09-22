@@ -8,15 +8,17 @@
 
 import Foundation
 
-class BinaryTreeNode {
-    var m_value: Int = 0;
+class BinaryTreeNode<Element: Equatable> {
+    var m_value: Element;
     
     var m_left: BinaryTreeNode? = nil
     var m_right: BinaryTreeNode? = nil
     
-    init() {}
+    init(value: Element) {
+        m_value = value
+    }
     
-    static func getBinaryTree(preOrder:Array<Int>, middleOrder:Array<Int>) -> BinaryTreeNode? {
+    static func getBinaryTree(preOrder:Array<Element>, middleOrder:Array<Element>) -> BinaryTreeNode? {
         guard preOrder.count > 0 else {
             return nil
         }
@@ -26,8 +28,7 @@ class BinaryTreeNode {
         }
         let rootValue = preOrder[0]
         
-        let root = BinaryTreeNode()
-        root.m_value = rootValue
+        let root = BinaryTreeNode(value: rootValue)
         if preOrder.count == 1 {
             return root
         }

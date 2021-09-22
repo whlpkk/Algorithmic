@@ -18,7 +18,6 @@ print(minHeap.sort())
 minHeap.push(41)
 print(minHeap.sort())
 
-
 print("\n归并排序")
 //归并排序
 var a1 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
@@ -32,6 +31,23 @@ var a2 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
 InsertSort.sort(&a2)
 print(a2)
 
+print("\n快速排序")
+print( QuickSort.sorted([1, 32, 42, 3, 12, 23, 56, 89, 24, 44], by: >) )
+var a3 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
+QuickSort.sort(&a3)
+print(a3)
+
+print("\n选择排序")
+print( SelectSort.sorted([1, 32, 42, 3, 12, 23, 56, 89, 24, 44], by: >) )
+var a4 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
+SelectSort.sort(&a4)
+print(a4)
+
+print("\n冒泡排序")
+print( BubbleSort.sorted([1, 32, 42, 3, 12, 23, 56, 89, 24, 44], by: >) )
+var a5 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
+BubbleSort.sort(&a5)
+print(a5)
 
 
 print("\n根据前序遍历和中序遍历构建二叉树")

@@ -35,14 +35,12 @@ func FibonacciSequence(_ n:Int) -> Int {
 
 //递归算法
 func FibonacciSequence2(_ n:Int) -> Int {
-    
     if n<=0 {
         return 0
     }
     if n==1 {
         return 1
     }
-    
     return FibonacciSequence2(n-2) + FibonacciSequence2(n-1)
 }
 

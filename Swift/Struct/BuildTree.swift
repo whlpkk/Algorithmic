@@ -8,6 +8,7 @@
 
 import Foundation
 
+// 二叉树
 class BinaryTreeNode<Element: Equatable> {
     var m_value: Element;
     

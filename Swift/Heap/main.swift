@@ -25,6 +25,13 @@ print( MergeSort.sorted(a1) )
 MergeSort.sort(&a1, by: >)
 print(a1)
 
+print("\n桶排序")
+//桶排序
+var a11 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
+print( BucketSort.sorted(a11) )
+BucketSort.sort(&a11, by: >)
+print(a11)
+
 print("\n插入排序")
 print( InsertSort.sorted([1, 32, 42, 3, 12, 23, 56, 89, 24, 44], by: >) )
 var a2 = [1, 32, 42, 3, 12, 23, 56, 89, 24, 44]
